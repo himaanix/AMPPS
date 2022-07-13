@@ -1,0 +1,23 @@
+{
+    "IDLE_COUNT": 100,
+    "FRAME_COUNT": 100,
+    "SAMPLES_TO_RUN":[
+        {"url": "https://github.com/aws-lumberyard-dev/o3de-atom-sampleviewer",
+         "project": "o3de-atom-sampleviewer",
+         "GameExecutable":"AtomSampleViewerStandalone", 
+         "subfolder":"",
+         "branch": "development",
+         "cmdparam":""},
+        {"url": "https://github.com/aws-lumberyard/loft-arch-vis-sample",
+         "project": "loft-arch-vis-sample",
+         "GameExecutable": "LoftSample.GameLauncher",
+         "subfolder": "project",
+         "branch": "main",
+         "cmdparam": ""}
+    ],
+    "things that need to be added":[
+        {"levels": "likely in cmdparam",
+        "width and height": "related to the kinds of data that is collected, so maybe thisd doesnt need to be in settings",
+        "should check if there is a way to find the exectuable name from the project": ""}
+    ]
+}
