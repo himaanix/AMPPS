@@ -8,11 +8,12 @@
 --
 --
 ----------------------------------------------------------------------------------------------------
+
 Print('Capturing data for ' ..tostring(#SAMPLES_TO_RUN) .. ' benchmarks')
 for index, sample in ipairs(SAMPLES_TO_RUN) do 
     sample_path = ''
     Print('Opening sample' ..sample_path)
-    --open sample--
+    --open sample will be in python--
     --resize --
 
     output_path = data .. sample[project]
