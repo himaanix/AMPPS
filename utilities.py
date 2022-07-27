@@ -88,24 +88,29 @@ def add_row_csv(sample, data):
     chdir(settings["THIS_DIRECTORY"])
     
 def get_row_csv(sample, row): 
+    all_data = get_all_rows(sample)
+    return all_data[row]
+    
+
+def get_all_rows(sample):
     chdir(sample["PathToData"])
     with open('Data.csv', 'r') as f:
         csv_reader = csv.DictReader(f)
         data = list(csv_reader)
     chdir(settings["THIS_DIRECTORY"])
-    data= data[row]
-    data["Mean"] = float(data["Mean"])
-    data["Min"] = float(data["Min"])
-    data["Max"] = float(data["Max"])
-    data["Data"] = stringrep_to_floats(data["Data"])
+    for i in data:
+        i["Mean"] = float(i["Mean"])
+        i["Min"] = float(i["Min"])
+        i["Max"] = float(i["Max"])
+        i["Data"] = stringrep_to_floats(i["Data"])
     return data
+
     
 def stringrep_to_floats(list):
     list_of_strings = list.strip('][').split(', ')
     list_of_floats = []
     for i in list_of_strings:
         list_of_floats.append(float(i))
-    print(list_of_floats)
     return list_of_floats
     
 
