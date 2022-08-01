@@ -29,6 +29,9 @@ def chdir(path):
 
 def join_paths(*paths):
     return os.path.join(*paths)
+
+def home():
+    chdir(wd)
     
 def safe_call(command, **kwargs):
     """
@@ -60,9 +63,17 @@ def process_data(sample):
     safe_call("pwd")
     chdir("../" + sample["project"] + "/user/Scripts/PerformanceBenchmarks/100KDraw_10KDrawable_MultiView")
     fps = []
-    for frame in range(1,101):
-        f = process_json('cpu_frame' + str(frame) + '_time.json')
+    frame = 1
+    while(True):
+        file_name = 'cpu_frame' + str(frame) + '_time.json'
+        print(file_name)
+        if (not os.path.exists(file_name)):
+            break
+        f = process_json(file_name)
         fps.append((f["ClassData"])["frameTime"])
+        frame +=1
+
+        
     meta = process_json('benchmark_metadata.json')
     date = datetime.datetime.now()
     all_data = {
@@ -75,17 +86,20 @@ def process_data(sample):
         "Max": max(fps),
         "Data": fps
     }
-    chdir(settings["THIS_DIRECTORY"])
+    home()
     return all_data
 
 def add_row_csv(sample, data):
     chdir(sample["PathToData"])
-    headers = ["Date", "Time", "BenchmarkName", "GPU", 
-               "Mean", "Min", "Max", "Data"]
+    headers = []
+    with open('Data.csv') as csvfile:
+        csv_reader = csv.DictReader(csvfile)
+        dict_from_csv = dict(list(csv_reader)[0])
+        headers = list(dict_from_csv.keys())
     with open('Data.csv', 'a', newline='') as f:
         i = csv.DictWriter(f, headers)
         i.writerow(data)
-    chdir(settings["THIS_DIRECTORY"])
+    home()
     
 def get_row_csv(sample, row): 
     all_data = get_all_rows(sample)
@@ -97,7 +111,7 @@ def get_all_rows(sample):
     with open('Data.csv', 'r') as f:
         csv_reader = csv.DictReader(f)
         data = list(csv_reader)
-    chdir(settings["THIS_DIRECTORY"])
+    home()
     for i in data:
         i["Mean"] = float(i["Mean"])
         i["Min"] = float(i["Min"])
@@ -116,5 +130,6 @@ def stringrep_to_floats(list):
 
 
 settings = process_json('settings.json')
-chdir(settings["THIS_DIRECTORY"])
+wd = os.getcwd()
+home()
 
