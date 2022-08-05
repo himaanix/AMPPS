@@ -18,11 +18,9 @@ def calcstd(mean, data):
 
 def hist_of_single_test(sample, row):
     data = util.get_row_csv(sample, row)
-    print(data["Date"])
     mean = data["Mean"]
     maxx = data["Max"]
     data = data["Data"]
-    print(len(data))
     fig, ax = plt.subplots()
     ax.hist(data, bins=100, linewidth=1, edgecolor= "white")
     plt.axvline(x=mean, color = 'red')
@@ -37,21 +35,17 @@ def data_over_time(sample):
     stds =  []
     runs = []
 
-
     for data in util.get_all_rows(sample):
-        
         mean = data["Mean"]
         maxx = data["Max"]
         minn = data["Min"]
         run = data["Date"] + " " + data["Time"]
-
         means.append(mean)
         maxes.append(maxx)
         mins.append(minn)
         stds.append(calcstd(mean,data["Data"]))
         runs.append(run)
 
-    print(stds)
     fig, ax = plt.subplots()
     ax.scatter(runs,maxes, color = 'red', zorder = 1)
     ax.scatter(runs, mins, color = 'red', zorder = 5)
@@ -64,7 +58,9 @@ def data_over_time(sample):
 
 settings = util.settings
 samples = settings["SAMPLES_TO_RUN"]
-for i in samples:
-    hist_of_single_test(i,5)
+
+def graph():
+    for i in samples:
+        data_over_time(i)
 
     

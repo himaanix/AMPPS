@@ -2,34 +2,39 @@
     "IDLE_COUNT": 100,
     "FRAME_COUNT": 100,
     "SAMPLES_TO_RUN":[
+        
+        {"url": "https://github.com/aws-lumberyard/loft-arch-vis-sample",
+            "project": "loft-arch-vis-sample",
+            "GameExecutable": "LoftSample.GameLauncher",
+            "subfolder": "Project",
+            "branch": "main",
+            "cmdparam": "+loadlevel=levels/archvis/loft/interior_03.spawnable --run-automation-suite C:/github/o3de/AutomatedTesting/Assets/AutomatedTestScripts/frametime.sa.lua --exit-on-automation-end --regset=\"/O3DE/ScriptAutomation/FrameTime/ProfileName=10KCubeFrameTime\" --regset=\"/O3DE/ScriptAutomation/FrameTime/CaptureCount=250\"",
+            "width": 1920,
+            "height": 1080,
+            "PathToData": "../../Users/himaani/",
+            "DataName": "LoftData.csv",
+            "OutputLocation": "scriptautomation/profiling/10KCubeFrameTime"},
         {"url": "https://github.com/aws-lumberyard-dev/o3de-atom-sampleviewer",
             "project": "o3de-atom-sampleviewer",
             "GameExecutable":"AtomSampleViewerStandalone", 
             "subfolder":"",
             "branch": "development",
-            "cmdparam":"--runtestsuite scripts/ampps_benchmark.luac",
+            "cmdparam":"--runtestsuite scripts/ampps_benchmark.luac --exitontestend",
             "width": 800,
             "height": 600,
-            "PathToData": "../../Users/himaani"}
-        
-        
+            "PathToData": "../../Users/himaani",
+            "DataName": "Data.csv",
+            "OutputLocation": "Scripts/PerformanceBenchmarks/100KDraw_10KDrawable_MultiView"}
         ],
            
 
     "things that need to be added":[
         
         {"should check if there is a way to find the exectuable name from the project": "",
-        "x" : " --exit-on-automation-end --regset=\"/o3de/ScriptAutomation/FrameTime/ProfileName=10KCubeFrameTime\" --regset=\"/o3de/ScriptAutomation/FrameTime/CaptureCount=250\""
-        },
-        {"url": "https://github.com/aws-lumberyard/loft-arch-vis-sample",
-            "project": "loft-arch-vis-sample",
-            "GameExecutable": "LoftSample.GameLauncher",
-            "subfolder": "Project",
-            "branch": "main",
-            "cmdparam": "+loadlevel=levels/archvis/loft/interior_03.spawnable --run-automation-suite frametime.sa.lua",
-            "width": 1920,
-            "height": 1080,
-            "PathToData": ""}
+        "x" : " "
+        }
+            
+        
     ]
         
     

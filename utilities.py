@@ -61,12 +61,14 @@ def safe_call(command, **kwargs):
 def process_data(sample):
     #Only for ASV right now
     safe_call("pwd")
-    chdir("../" + sample["project"] + "/user/Scripts/PerformanceBenchmarks/100KDraw_10KDrawable_MultiView")
+    path = os.path.join("..", sample["project"], sample["subfolder"], "user", sample["OutputLocation"])
+    print(path)
+    chdir(path)
+    safe_call("pwd")
     fps = []
     frame = 1
     while(True):
         file_name = 'cpu_frame' + str(frame) + '_time.json'
-        print(file_name)
         if (not os.path.exists(file_name)):
             break
         f = process_json(file_name)
@@ -92,11 +94,20 @@ def process_data(sample):
 def add_row_csv(sample, data):
     chdir(sample["PathToData"])
     headers = []
-    with open('Data.csv') as csvfile:
-        csv_reader = csv.DictReader(csvfile)
-        dict_from_csv = dict(list(csv_reader)[0])
-        headers = list(dict_from_csv.keys())
-    with open('Data.csv', 'a', newline='') as f:
+    filename = sample["DataName"]
+    if (not os.path.exists(filename)):
+        safe_call("touch " + filename)
+        headers = ["Date", "Time", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Data"]
+        f = open(filename, 'w') 
+        i = csv.writer(f)
+        i.writerow(headers)
+        f.close()
+    else:
+        with open(sample["DataName"]) as csvfile:
+            csv_reader = csv.DictReader(csvfile)
+            dict_from_csv = dict(list(csv_reader)[0])
+            headers = list(dict_from_csv.keys())
+    with open(sample["DataName"], 'a', newline='') as f:
         i = csv.DictWriter(f, headers)
         i.writerow(data)
     home()
@@ -108,11 +119,12 @@ def get_row_csv(sample, row):
 
 def get_all_rows(sample):
     chdir(sample["PathToData"])
-    with open('Data.csv', 'r') as f:
+    with open(sample["DataName"], 'r') as f:
         csv_reader = csv.DictReader(f)
         data = list(csv_reader)
     home()
     for i in data:
+        print(i)
         i["Mean"] = float(i["Mean"])
         i["Min"] = float(i["Min"])
         i["Max"] = float(i["Max"])
