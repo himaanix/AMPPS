@@ -7,6 +7,31 @@ SPDX-License-Identifier: Apache-2.0 OR MIT
 
 import build 
 import graph
+import argparse
 
-build.build()
-graph.graph()
+
+parser = argparse.ArgumentParser(description= "Options for Running AMPPS")
+parser.add_argument("--clean_build", help = "Runs a clean build of the project", default = False, action = 'store_true')
+parser.add_argument("--clean_assets", help = "Runs a clean build of assets", default = False, action = 'store_true')
+parser.add_argument("--graph", help = "Uses the graphing utility", default = False, action = 'store_true')
+parser.add_argument("--collect", help = "Collects data", default = False, action = 'store_true')
+parser.add_argument("--build", help = "Builds the Project", default = False, action = 'store_true')
+parser.add_argument("--update", help = "git pull on the project", default = False, action = 'store_true')
+parser.add_argument("--path_to_settings", help = "Specify an alternate path to a settings.json file")
+args = parser.parse_args()
+
+dobuild=True
+doupdate=True
+docollect=True
+dograph = True
+if args.build or args.update or args.collect or args.graph:
+    dobuild = args.build
+    doupdate = args.update
+    docollect = args.collect
+    dograph = args.graph
+
+print(args)
+if dobuild or doupdate or docollect:
+    build.Build(args.clean_build, args.clean_assets, dobuild, doupdate, docollect)
+if dograph:
+    graph.Graph()

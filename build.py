@@ -8,84 +8,99 @@ SPDX-License-Identifier: Apache-2.0 OR MIT
 import utilities as util
 settings = ""
 
-def buildassetsbatch():
-    return util.safe_call("cmake --build build --target AssetProcessorBatch --config profile -- /m")
+def BuildAssetsBatch():
+    return util.SafeCall("cmake --build build --target AssetProcessorBatch --config profile -- /m")
 
 
-def configure():
-    return util.safe_call("cmake -B build -G \"Visual Studio 16 2019\"")
+def Configure():
+    return util.SafeCall("cmake -B build -G \"Visual Studio 16 2019\"")
 
-def buildproject(sample):
-    return util.safe_call("cmake --build build --target Editor " + sample["GameExecutable"] + " --config profile -- /m")
+def BuildProject(sample):
+    return util.SafeCall("cmake --build build --target Editor " + sample["game_executable"] + " --config profile -- /m")
 
-def runassetprocess():
-    return util.safe_call("build/bin/profile/AssetProcessorBatch.exe")
+def RunAssetProcess():
+    return util.SafeCall("build/bin/profile/AssetProcessorBatch.exe")
 
-def build_config(sample):
-    util.safe_call("pwd")
-    util.chdir(util.join_paths("../", 
-                          sample["project"],
-                          sample["subfolder"]))  
-
-    config = configure()
+def BuildConfig(sample):
+    util.Chdir(util.JoinPaths(sample["project"],
+                               sample["subfolder"]))  
+    config = Configure()
     if config != 0:
         exit()
-    edit_exe = buildproject(sample) 
-    if edit_exe != 0:
+    editExe = BuildProject(sample) 
+    if editExe != 0:
         exit()     
-    apbatch = buildassetsbatch()
-    if apbatch != 0:
+    apBatch = BuildAssetsBatch()
+    if apBatch != 0:
         exit()
-    util.home()
+    RunAssetProcess()
+    util.Home()
 
 
     
-def collect_data(sample):
-    #util.safe_call("benchmark.lua")
-    util.safe_call("pwd")
-    util.chdir(util.join_paths("..", sample["project"], sample["subfolder"], "build", "bin", "profile"))
-    util.safe_call("pwd")
-    cmd = sample["GameExecutable"] + ".exe " +  sample["cmdparam"]
-    print(cmd)
-    util.safe_call(cmd)
-    util.home()
+def CollectData(sample):
+    util.Chdir(util.JoinPaths(sample["project"], sample["subfolder"], "build", "bin", "profile"))
+    cmd = sample["game_executable"] + ".exe " +  sample["cmd_param"]
+    util.SafeCall(cmd)
+    util.Home()
 
-def copy_data(sample):
-    data = util.process_data(sample)
-    util.add_row_csv(sample, data)
+def CopyData(sample):
+    data = util.ProcessData(sample)
+    util.AddRowCsv(sample, data)
 
-def cleanbuild(sample):
+def CleanBuild(sample):
     #delete build folder
-    util.chdir(util.join_paths("..", sample["project"], sample["subfolder"]))
-    util.safe_call("rm -rf build")
-    util.home()
+    util.Chdir(util.JoinPaths(sample["project"], sample["subfolder"]))
+    util.SafeCall("rm -rf build") 
+    util.Home()
 
-def cleanassets(sample):
+def CleanAssets(sample):
     #delete cache and user folder
-    util.chdir(util.join_paths("..", sample["project"], sample["subfolder"]))
-    util.safe_call("rm -rf Cache")
-    util.safe_call("rm -rf user")
-    util.home()
+    util.Chdir(util.JoinPaths(sample["project"], sample["subfolder"]))
+    util.SafeCall("rm -rf Cache") #switch away from bash commands
+    util.SafeCall("rm -rf user")
+    util.Home()
 
-def clone(sample):
-    util.chdir("..")
-    util.safe_call("git clone " + sample["url"])
-    util.home()
+def Clone(sample):
+    util.Chdir("..")
+    util.SafeCall("git Clone " + sample["url"])
+    util.Home()
 
-def update(sample):
-    util.chdir(util.join_paths("..", sample["project"] ))
-    util.safe_call("git pull")
-    util.home()    
+def UpdateSample(sample):
+    util.Chdir(util.JoinPaths(sample["project"] ))
+    util.SafeCall("git pull")
+    util.Home() 
 
+def UpdateO3de():
+    util.Chdir(settings["path_to_o3de"])
+    util.SafeCall("git pull")   
+    util.Home()
 
 
 settings = util.settings
-samples = settings["SAMPLES_TO_RUN"]
+samples = settings["samples_to_run"]
 
-def build():
+
+def Build(cleanAssets, cleanBuild, build, update, collect):
+    
+    if update:
+        UpdateO3de()
+        for i in samples:
+            UpdateSample(i)
     for i in samples:
-        #build_config(i)
-        #collect_data(i)
-        copy_data(i)
+        if cleanAssets:
+            CleanAssets(i)
+        if cleanBuild:
+            CleanBuild(i)
+        if build:
+            BuildConfig(i)
+        if collect:
+            CollectData(i)
+            CopyData(i)
+
+
+if __name__ == '__main__': 
+    Build(True,  True, True, True, True)
+
 
 

@@ -8,7 +8,7 @@ SPDX-License-Identifier: Apache-2.0 OR MIT
 import utilities as util
 import matplotlib.pyplot as plt 
 
-def calcstd(mean, data):
+def CalcStd(mean, data):
     res = 0
     for i in data:
         res += (mean - i) ** 2
@@ -16,34 +16,58 @@ def calcstd(mean, data):
     res = res ** (1/2)
     return res
 
-def hist_of_single_test(sample, row):
-    data = util.get_row_csv(sample, row)
+def HistOfSingleTest(sample, row):
+    data = util.GetRowCsv(sample, row)
     mean = data["Mean"]
     maxx = data["Max"]
+    date_time = data["Date"] + " " + data["Time"]
     data = data["Data"]
     fig, ax = plt.subplots()
     ax.hist(data, bins=100, linewidth=1, edgecolor= "white")
-    plt.axvline(x=mean, color = 'red')
-    plt.axvline(x=maxx, color = 'green')
-    plt.ylim(bottom = -10)
-    plt.show()
+    plt.axvline(x=mean, color = 'green')
+    plt.axvline(x=maxx, color = 'red')
+    ax.spines['bottom'].set_visible(False)
+    plt.ylabel("Count")
+    plt.xlabel("Frame Time in ms")
+    plt.title("Histogram of Frametimes for " + date_time)
+    util.Chdir(sample['path_to_data'])
+    plt.savefig("hist" + str(row) + ".jpg")
+    util.Home()
 
-def data_over_time(sample):
+def HistOfLatest(sample):
+    data = util.GetAllRows(sample)
+    index = len(data) -1
+    return HistOfSingleTest(sample,index)
+
+def DataOverTime(sample,fps):
     means = []
     maxes = []
     mins =  []
     stds =  []
     runs = []
 
-    for data in util.get_all_rows(sample):
-        mean = data["Mean"]
-        maxx = data["Max"]
-        minn = data["Min"]
-        run = data["Date"] + " " + data["Time"]
+    if fps:
+        filename = "fpsovertime"
+        ylabel = "Frames/Second"
+        title = "Frames/Second Over Time"
+    else:
+        filename = "frametimeovertime"
+        ylabel = "Frame Time (ms)"
+        title = "Frame Time Over Time"
+    for data in util.GetAllRows(sample):
+        mean =  data["Mean"]
+        maxx =  data["Max"]
+        minn =  data["Min"]
+        run =   data["Date"] + " " + data["Time"]
+        if(fps):
+            mean = 1000/mean
+            maxx = 1000/maxx
+            minn = 1000/minn
+
         means.append(mean)
         maxes.append(maxx)
         mins.append(minn)
-        stds.append(calcstd(mean,data["Data"]))
+        stds.append(CalcStd(mean,data["Data"]))
         runs.append(run)
 
     fig, ax = plt.subplots()
@@ -51,16 +75,30 @@ def data_over_time(sample):
     ax.scatter(runs, mins, color = 'red', zorder = 5)
     ax.scatter(runs,means, color = 'black', zorder= 10)
     ax.errorbar(runs, means, stds, fmt = 'none', linewidth=2, capsize=6)
-    plt.show()
+    plt.ylabel(ylabel)
+    plt.xlabel("Dates")
+    plt.title(title)
+    util.Chdir(sample['path_to_data'])
+    plt.savefig(filename + ".jpg")
+    util.Home()
     
+def FpsOverTime(sample):
+    DataOverTime(sample,True)
+
+def FramesOverTime(sample):
+    DataOverTime(sample,False)
 
 
 
 settings = util.settings
-samples = settings["SAMPLES_TO_RUN"]
+samples = settings["samples_to_run"]
 
-def graph():
+def Graph():
     for i in samples:
-        data_over_time(i)
+        FpsOverTime(i)
+        FramesOverTime(i)
+        HistOfLatest(i)
 
-    
+
+if __name__ == '__main__':
+    Graph()   

@@ -20,20 +20,20 @@ class PerformanceTestingException(Exception):
     """ Custom Exception class for performance testing """
     pass
 
-def process_json(file):
+def ProcessJson(file):
     f = open(file)
     return json.load(f)
     
-def chdir(path):
+def Chdir(path):
     os.chdir(path)
 
-def join_paths(*paths):
+def JoinPaths(*paths):
     return os.path.join(*paths)
 
-def home():
-    chdir(wd)
+def Home():
+    Chdir(wd)
     
-def safe_call(command, **kwargs):
+def SafeCall(command, **kwargs):
     """
     Method adapted from Lumberyard Utilities
     
@@ -44,39 +44,35 @@ def safe_call(command, **kwargs):
     :param kwargs: Keyword args forwarded to subprocess.check_call.
     :return: An exitcode of 0 if the call succeeds, otherwise the exitcode returned from the failed subprocess call.
     """
-    cmd_string = command
+    cmdString = command
     if type(command) == list:
-        cmd_string = ' '.join(command)
+        cmdString = ' '.join(command)
 
-    logger.info(f'Executing "check_call({cmd_string})"')
+    logger.info(f'Executing "check_call({cmdString})"')
     try:
         subprocess.check_call(command, **kwargs)
     except subprocess.CalledProcessError as e:
-        logger.warning(f'Command "{cmd_string}" failed with returncode {e.returncode}')
+        logger.warning(f'Command "{cmdString}" failed with returncode {e.returncode}')
         return e.returncode
     else:
-        logger.info(f'Successfully executed "check_call({cmd_string})"')
+        logger.info(f'Successfully executed "check_call({cmdString})"')
     return 0
 
-def process_data(sample):
-    #Only for ASV right now
-    safe_call("pwd")
-    path = os.path.join("..", sample["project"], sample["subfolder"], "user", sample["OutputLocation"])
-    print(path)
-    chdir(path)
-    safe_call("pwd")
+def ProcessData(sample):
+    path = os.path.join(sample["project"], sample["subfolder"], "user", sample["output_location"])
+    Chdir(path)
     fps = []
     frame = 1
     while(True):
         file_name = 'cpu_frame' + str(frame) + '_time.json'
         if (not os.path.exists(file_name)):
             break
-        f = process_json(file_name)
+        f = ProcessJson(file_name)
         fps.append((f["ClassData"])["frameTime"])
         frame +=1
 
         
-    meta = process_json('benchmark_metadata.json')
+    meta = ProcessJson('benchmark_metadata.json')
     date = datetime.datetime.now()
     all_data = {
         "Date": date.strftime("%B %d %Y"),
@@ -88,51 +84,50 @@ def process_data(sample):
         "Max": max(fps),
         "Data": fps
     }
-    home()
+    Home()
     return all_data
 
-def add_row_csv(sample, data):
-    chdir(sample["PathToData"])
+def AddRowCsv(sample, data):
+    Chdir(sample["path_to_data"])
     headers = []
-    filename = sample["DataName"]
+    filename = sample["data_name"]
     if (not os.path.exists(filename)):
-        safe_call("touch " + filename)
+        SafeCall("touch " + filename)
         headers = ["Date", "Time", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Data"]
         f = open(filename, 'w') 
         i = csv.writer(f)
         i.writerow(headers)
         f.close()
     else:
-        with open(sample["DataName"]) as csvfile:
+        with open(sample["data_name"]) as csvfile:
             csv_reader = csv.DictReader(csvfile)
             dict_from_csv = dict(list(csv_reader)[0])
             headers = list(dict_from_csv.keys())
-    with open(sample["DataName"], 'a', newline='') as f:
+    with open(sample["data_name"], 'a', newline='') as f:
         i = csv.DictWriter(f, headers)
         i.writerow(data)
-    home()
+    Home()
     
-def get_row_csv(sample, row): 
-    all_data = get_all_rows(sample)
+def GetRowCsv(sample, row): 
+    all_data = GetAllRows(sample)
     return all_data[row]
     
 
-def get_all_rows(sample):
-    chdir(sample["PathToData"])
-    with open(sample["DataName"], 'r') as f:
+def GetAllRows(sample):
+    Chdir(sample["path_to_data"])
+    with open(sample["data_name"], 'r') as f:
         csv_reader = csv.DictReader(f)
         data = list(csv_reader)
-    home()
+    Home()
     for i in data:
-        print(i)
         i["Mean"] = float(i["Mean"])
         i["Min"] = float(i["Min"])
         i["Max"] = float(i["Max"])
-        i["Data"] = stringrep_to_floats(i["Data"])
+        i["Data"] = StringRepToFloats(i["Data"])
     return data
 
     
-def stringrep_to_floats(list):
+def StringRepToFloats(list):
     list_of_strings = list.strip('][').split(', ')
     list_of_floats = []
     for i in list_of_strings:
@@ -141,7 +136,7 @@ def stringrep_to_floats(list):
     
 
 
-settings = process_json('settings.json')
+settings = ProcessJson('settings.json')
 wd = os.getcwd()
-home()
+Home()
 
