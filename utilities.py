@@ -7,6 +7,7 @@ SPDX-License-Identifier: Apache-2.0 OR MIT
 
 import logging
 import os
+import shutil
 import subprocess
 import json
 import datetime
@@ -29,6 +30,17 @@ def Chdir(path):
 
 def JoinPaths(*paths):
     return os.path.join(*paths)
+
+def RmDir(path):
+    shutil.rmtree(path, onerror=HandleWriteProtectedError)
+
+def HandleWriteProtectedError(func, path, exc_info):
+    print('Handling Error for file ', path)
+    print(exc_info)
+    if not os.access(path, os.W_OK):
+        print("Access Issue")
+        os.chmod(path, 0o200)
+        func(path)
 
 def Home():
     Chdir(wd)
@@ -74,9 +86,8 @@ def ProcessData(sample):
         
     meta = ProcessJson('benchmark_metadata.json')
     date = datetime.datetime.now()
-    all_data = {
-        "Date": date.strftime("%B %d %Y"),
-        "Time": date.strftime("%H:%M:%S"),
+    allData = {
+        "Timestamp": date.strftime("%m/%d/%y %H:%M"),
         "BenchmarkName": (meta["ClassData"])["benchmarkName"],
         "GPU": ((meta["ClassData"])["gpuInfo"])["description"],
         "Mean": reduce(lambda a, b: a+ b, fps)/ len(fps),
@@ -85,15 +96,15 @@ def ProcessData(sample):
         "Data": fps
     }
     Home()
-    return all_data
+    return allData
 
-def AddRowCsv(sample, data):
+def AddRowCsv(sample, data): #this method needs to be cleaned up
     Chdir(sample["path_to_data"])
     headers = []
     filename = sample["data_name"]
     if (not os.path.exists(filename)):
         SafeCall("touch " + filename)
-        headers = ["Date", "Time", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Data"]
+        headers = ["Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Data"]
         f = open(filename, 'w') 
         i = csv.writer(f)
         i.writerow(headers)
@@ -135,8 +146,9 @@ def StringRepToFloats(list):
     return list_of_floats
     
 
+def SetConstants(f):
+    settings = ProcessJson(f)
+    return settings
 
-settings = ProcessJson('settings.json')
 wd = os.getcwd()
 Home()
-

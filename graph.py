@@ -20,7 +20,7 @@ def HistOfSingleTest(sample, row):
     data = util.GetRowCsv(sample, row)
     mean = data["Mean"]
     maxx = data["Max"]
-    date_time = data["Date"] + " " + data["Time"]
+    date_time = data["Timestamp"]
     data = data["Data"]
     fig, ax = plt.subplots()
     ax.hist(data, bins=100, linewidth=1, edgecolor= "white")
@@ -58,7 +58,7 @@ def DataOverTime(sample,fps):
         mean =  data["Mean"]
         maxx =  data["Max"]
         minn =  data["Min"]
-        run =   data["Date"] + " " + data["Time"]
+        run = data["Timestamp"]
         if(fps):
             mean = 1000/mean
             maxx = 1000/maxx
@@ -78,6 +78,8 @@ def DataOverTime(sample,fps):
     plt.ylabel(ylabel)
     plt.xlabel("Dates")
     plt.title(title)
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
     util.Chdir(sample['path_to_data'])
     plt.savefig(filename + ".jpg")
     util.Home()
@@ -90,10 +92,10 @@ def FramesOverTime(sample):
 
 
 
-settings = util.settings
-samples = settings["samples_to_run"]
 
-def Graph():
+
+def Graph(settings):
+    samples = settings["samples_to_run"]
     for i in samples:
         FpsOverTime(i)
         FramesOverTime(i)
@@ -101,4 +103,5 @@ def Graph():
 
 
 if __name__ == '__main__':
+
     Graph()   

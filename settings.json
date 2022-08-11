@@ -9,7 +9,7 @@
             "cmd_param": "+loadlevel=levels/archvis/loft/interior_03.spawnable --run-automation-suite C:/github/o3de/AutomatedTesting/Assets/AutomatedTestScripts/frametime.sa.lua --exit-on-automation-end --regset=\"/O3DE/ScriptAutomation/FrameTime/ProfileName=10KCubeFrameTime\" --regset=\"/O3DE/ScriptAutomation/FrameTime/CaptureCount=250\"",
             "width": 1920,
             "height": 1080,
-            "frame_count": 2500,
+            "frame_count": 500,
             "idle_count":100,
             "path_to_data": "../../Users/himaani/Loft",
             "data_name": "LoftData.csv",
@@ -25,7 +25,7 @@
             "frame_count": 500,
             "idle_count":100,
             "path_to_data": "../../Users/himaani/ASV",
-            "data_name": "Data.csv",
+            "data_name": "ASVData.csv",
             "output_location": "Scripts/PerformanceBenchmarks/100KDraw_10KDrawable_MultiView"}
         ]       
     
