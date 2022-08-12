@@ -91,9 +91,6 @@ def FramesOverTime(sample):
     DataOverTime(sample,False)
 
 
-
-
-
 def Graph(settings):
     samples = settings["samples_to_run"]
     for i in samples:

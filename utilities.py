@@ -38,7 +38,6 @@ def HandleWriteProtectedError(func, path, exc_info):
     print('Handling Error for file ', path)
     print(exc_info)
     if not os.access(path, os.W_OK):
-        print("Access Issue")
         os.chmod(path, 0o200)
         func(path)
 
@@ -60,14 +59,14 @@ def SafeCall(command, **kwargs):
     if type(command) == list:
         cmdString = ' '.join(command)
 
-    logger.info(f'Executing "check_call({cmdString})"')
+    print(f'Executing "check_call({cmdString})"')
     try:
         subprocess.check_call(command, **kwargs)
     except subprocess.CalledProcessError as e:
-        logger.warning(f'Command "{cmdString}" failed with returncode {e.returncode}')
+        print(f'Command "{cmdString}" failed with returncode {e.returncode}')
         return e.returncode
     else:
-        logger.info(f'Successfully executed "check_call({cmdString})"')
+        print(f'Successfully executed "check_call({cmdString})"')
     return 0
 
 def ProcessData(sample):

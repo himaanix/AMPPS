@@ -23,14 +23,11 @@ def RunAssetProcess():
 def BuildConfig(sample):
     util.Chdir(util.JoinPaths(sample["project"],
                                sample["subfolder"]))  
-    config = Configure()
-    if config != 0:
+    if Configure() != 0:
         exit()
-    editExe = BuildProject(sample) 
-    if editExe != 0:
+    if BuildProject(sample) != 0:
         exit()     
-    apBatch = BuildAssetsBatch()
-    if apBatch != 0:
+    if BuildAssetsBatch() != 0:
         exit()
     if RunAssetProcess() != 0:
         exit()
@@ -39,13 +36,18 @@ def BuildConfig(sample):
 
     
 def CollectData(sample):
-    util.SafeCall("pwd")
     util.Chdir(util.JoinPaths(sample["project"], sample["subfolder"], "build", "bin", "profile"))
-    cmd = sample["game_executable"] + ".exe " +  sample["cmd_param"]
+    cmd = (sample["game_executable"] + ".exe " +  sample["cmd_param"] + " " +
+        "--regset=\"/O3DE/ScriptAutomation/FrameTime/CaptureCount=" + str(sample["frame_count"]) +"\" " +
+        "--regset=\"/O3DE/ScriptAutomation/FrameTime/IdleCount=" + str(sample["idle_count"]) + "\" " 
+        #+
+    #    "--regset=\"/O3DE/ScriptAutomation/FrameTime/ViewportWidth=" + str(sample["width"]) + "\" " +
+     #   "--regset=\"/O3DE/ScriptAutomation/FrameTime/ViewportHeight=" + str(sample["height"]) + "\" "
+     )
     print(cmd)
-    util.SafeCall("pwd")
-    util.SafeCall(cmd)
+    ret = util.SafeCall(cmd)
     util.Home()
+    return ret
 
 def CopyData(sample):
     data = util.ProcessData(sample)
@@ -62,18 +64,23 @@ def CleanAssets(sample):
 
 def Clone(sample):
     util.Chdir("..")
-    util.SafeCall("git Clone " + sample["url"])
+    ret = util.SafeCall("git Clone " + sample["url"])
     util.Home()
+    return ret
 
 def UpdateSample(sample):
     util.Chdir(util.JoinPaths(sample["project"] ))
-    util.SafeCall("git pull")
+    ret = util.SafeCall("git pull")
     util.Home() 
+    return ret
 
-def UpdateO3de():
+def UpdateO3de(settings):
+    print(settings)
+    print(settings["path_to_o3de"])
     util.Chdir(settings["path_to_o3de"])
-    util.SafeCall("git pull")   
+    ret = util.SafeCall("git pull")   
     util.Home()
+    return ret
 
 
 
@@ -82,20 +89,22 @@ def Build(cleanAssets, cleanBuild, build, update, collect, settings):
 
     samples = settings["samples_to_run"]
     if update:
-        UpdateO3de()
+        UpdateO3de(settings)
         for i in samples:
             UpdateSample(i)
     for i in samples:
-
-        if cleanAssets:
-            CleanAssets(i)
-        if cleanBuild:
-            CleanBuild(i)
-        if build:
-            BuildConfig(i)
-        if collect:
-            CollectData(i)
-            CopyData(i)
+        if i["subfolder"] != "":
+            if cleanAssets:
+                CleanAssets(i)
+            if cleanBuild:
+                CleanBuild(i)
+            if build:
+                BuildConfig(i)
+            if collect:
+                if CollectData(i) != 0:
+                    exit()
+                if CopyData(i) != 0:
+                    exit()
 
 
 if __name__ == '__main__': 
