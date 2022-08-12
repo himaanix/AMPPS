@@ -24,7 +24,8 @@ For each project in "samples_to_run" there are 13 variables that are needed.
 * "idle_time": this is the amount of frames you would like the level to idle for before beginning data collection  
 * "path_to_data": This is path to the local CSV file where you will store the data that is collected as well as where any graphs generated will be saved
 * "data_name": This is the name of the CSV file where the collected data is stored  
-* "output_location": This is the output location of the generated data in the project. It is important that the generated Data follows the same format as in the wiki. This should be relative to the subfolder. This path should be ***relative to the user folder*** in your project.
+* "output_location": This is the output location of the generated data in the project. It is important that the generated Data follows the same format as in the wiki. This should be relative to the subfolder. This path should be ***relative to the user folder*** in your project.  
+
 More information on each of these parameters can be found in the wiki  
   
     
@@ -33,7 +34,7 @@ More information on each of these parameters can be found in the wiki
 
 ***Run*** `runner.py` ***with the desired command line parameters.***  
 * Without any command line parameters runner.py will update the repositories of the project, incrementally build the project and asset processor, run the asset processor, collect and copy data to the specified file, and save a histogram of the latest data, as well as a graph over time of both frametimes and frames per second.  
-*In order to run a clean build of the project or a clean build of assets, use `--clean_build` and/or `--clean_assets`  
+* In order to run a clean build of the project or a clean build of assets, use `--clean_build` and/or `--clean_assets`  
 * If you only want to use a subset of the functionalities, use the parameters for the functions you would like to use. By specifying one or more of these functions, the rest will not execute unless also specified. 
 * You may also specify an alternate settings.json file with `--path_to_settings` followed by the path to the alternate file.
 * For more information on command line parameter options run `runner.py --help`  
@@ -42,7 +43,8 @@ More information on each of these parameters can be found in the wiki
     
   
 
-<h3>Requirements for the Graphing Functionality:</h3>
+<h3>Requirements for the Graphing Functionality:</h3>  
+
 * If the file in "data_name" is not empty, ensure that the column names and order are: "Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", and "Data"
 * Once the file has been populated with the data that you want graphed, you can run a graphing function.
 
