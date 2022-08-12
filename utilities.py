@@ -102,17 +102,11 @@ def AddRowCsv(sample, data): #this method needs to be cleaned up
     headers = []
     filename = sample["data_name"]
     if (not os.path.exists(filename)):
-        SafeCall("touch " + filename)
-        headers = ["Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Data"]
-        f = open(filename, 'w') 
-        i = csv.writer(f)
+        n = open(filename, 'w')
+        headers = ["Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Data"] 
+        i = csv.writer(n)
         i.writerow(headers)
-        f.close()
-    else:
-        with open(sample["data_name"]) as csvfile:
-            csv_reader = csv.DictReader(csvfile)
-            dict_from_csv = dict(list(csv_reader)[0])
-            headers = list(dict_from_csv.keys())
+        n.close()
     with open(sample["data_name"], 'a', newline='') as f:
         i = csv.DictWriter(f, headers)
         i.writerow(data)
