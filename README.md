@@ -1,6 +1,6 @@
 <h2>In order to use these scripts, you must first have some basic requirements:</h2>  
 
-1. Have O3DE installed - instructions for this can be found at  
+1. Have O3DE installed - instructions for this can be found at https://github.com/o3de/o3de  
 2. Have the projects that you desire to test cloned  
 3. O3DE, the target projects, and this repository should all be cloned at the same level  
 4. You must have python installed on your machine  
