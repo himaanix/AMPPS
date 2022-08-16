@@ -1,3 +1,8 @@
+<h2> AMPPS </h2>  
+
+AMPPS stands for Automated Multi-Project Performance Collection System.  
+This repository allows for collecting the performance data for multiple projects easily and efficiently.  
+
 <h2>In order to use these scripts, you must first have some basic requirements:</h2>  
 
 1. Have O3DE installed - instructions for this can be found at https://github.com/o3de/o3de  
@@ -36,6 +41,7 @@ More information on each of these parameters can be found in the wiki
 * Without any command line parameters runner.py will update the repositories of the project, incrementally build the project and asset processor, run the asset processor, collect and copy data to the specified file, and save a histogram of the latest data, as well as a graph over time of both frametimes and frames per second.  
 * In order to run a clean build of the project or a clean build of assets, use `--clean_build` and/or `--clean_assets`  
 * If you only want to use a subset of the functionalities, use the parameters for the functions you would like to use. By specifying one or more of these functions, the rest will not execute unless also specified. 
+* If you are collecting data, ensure that the data file is not open
 * You may also specify an alternate settings.json file with `--path_to_settings` followed by the path to the alternate file.
 * For more information on command line parameter options run `runner.py --help`  
 
@@ -45,7 +51,7 @@ More information on each of these parameters can be found in the wiki
 
 <h3>Requirements for the Graphing Functionality:</h3>  
 
-* If the file in "data_name" is not empty, ensure that the column names and order are: "Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", and "Data"
+* If the file in "data_name" is not empty, ensure that the column names and order are: "Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Standard Deviation", and "Data"
 * Once the file has been populated with the data that you want graphed, you can run a graphing function.
 
 <h4>Using the Graphing Functionality for Other Uses:</h4>
@@ -54,3 +60,6 @@ If the DataOverTime function is being used to graph something other than FPS, en
 `DataOverTime`: This function plots a graph with standard deviation bars in blue, the mean in black, and the max and min in red.  
 `HistOfSingleTest`: This function plots a histogram of the given test as well as a green line indicating the mean, and a red line indicating the maximum  
 `HistOfLatest`: This function plots a histogram of the last row in the specified data file
+
+
+levels/AutomatedTesting/Levels/Performance/10KEntityCpuPerfTest/10KEntityCpuPerfTest.spawnable

@@ -21,65 +21,83 @@ def RunAssetProcess():
     return util.SafeCall("build/bin/profile/AssetProcessorBatch.exe")
 
 def BuildConfig(sample):
-    util.Chdir(util.JoinPaths(sample["project"],
+    util.ChDir(util.JoinPaths(sample["project"],
                                sample["subfolder"]))  
     if Configure() != 0:
         exit()
+    print(sample["project"] + " has been configured")
     if BuildProject(sample) != 0:
         exit()     
+    print(sample["project"] + " has been built")
     if BuildAssetsBatch() != 0:
         exit()
+    print(sample["project"] + "'s assets have been built")
     if RunAssetProcess() != 0:
         exit()
+    print(sample["project"] + "'s assets have been processed")
     util.Home()
+    
 
 
     
 def CollectData(sample):
-    util.Chdir(util.JoinPaths(sample["project"], sample["subfolder"], "build", "bin", "profile"))
-    cmd = (sample["game_executable"] + ".exe " +  sample["cmd_param"] + " " +
+    util.RmDir(util.JoinPaths(sample["project"], sample["subfolder"], "user", sample["output_location"]))
+    print("Previous output JSON files have been deleted")
+    util.ChDir(util.JoinPaths(sample["project"], sample["subfolder"], "build", "bin", "profile"))
+    cmd = (sample["game_executable"] + ".exe " +  sample["cmd_param"] + " "  +
         "--regset=\"/O3DE/ScriptAutomation/FrameTime/CaptureCount=" + str(sample["frame_count"]) +"\" " +
-        "--regset=\"/O3DE/ScriptAutomation/FrameTime/IdleCount=" + str(sample["idle_count"]) + "\" " 
-        #+
-    #    "--regset=\"/O3DE/ScriptAutomation/FrameTime/ViewportWidth=" + str(sample["width"]) + "\" " +
-     #   "--regset=\"/O3DE/ScriptAutomation/FrameTime/ViewportHeight=" + str(sample["height"]) + "\" "
-     )
-    print(cmd)
+        "--regset=\"/O3DE/ScriptAutomation/FrameTime/IdleCount=" + str(sample["idle_count"]) + "\" " +
+        "--regset=\"/O3DE/ScriptAutomation/FrameTime/ViewportWidth=" + str(sample["width"]) + "\" " +
+        "--regset=\"/O3DE/ScriptAutomation/FrameTime/ViewportHeight=" + str(sample["height"]) + "\" ")
     ret = util.SafeCall(cmd)
     util.Home()
-    return ret
+    #if ret == 0:
+     #   print("Data for " + sample["project"] + "has been collected")
+    #else:
+     #   print("Data collection for " + sample["project"] + " has failed")
+    return 0
 
 def CopyData(sample):
     data = util.ProcessData(sample)
     util.AddRowCsv(sample, data)
+    print("Data has been copied to " + sample["path_to_data"]+ "/" + sample["data_name"])
+    return 0
 
 def CleanBuild(sample):
     #delete build folder
     util.RmDir(util.JoinPaths(sample["project"], sample["subfolder"], "build"))
+    print(sample["project"] +"'s build folder has been cleaned")
 
 def CleanAssets(sample):
     #delete cache and user folder
     util.RmDir(util.JoinPaths(sample["project"], sample["subfolder"], "Cache"))
     util.RmDir(util.JoinPaths(sample["project"], sample["subfolder"], "user"))
+    print(sample["project"] + "'s assets have been cleaned")
 
 def Clone(sample):
-    util.Chdir("..")
+    util.ChDir("..")
     ret = util.SafeCall("git Clone " + sample["url"])
     util.Home()
+    if ret == 0:
+        print(sample["project"] + " has been cloned")
     return ret
 
 def UpdateSample(sample):
-    util.Chdir(util.JoinPaths(sample["project"] ))
+    util.ChDir(util.JoinPaths(sample["project"] ))
     ret = util.SafeCall("git pull")
-    util.Home() 
+    util.Home()
+    if ret == 0:
+        print(sample["project"] + " has been updated")
     return ret
 
 def UpdateO3de(settings):
     print(settings)
     print(settings["path_to_o3de"])
-    util.Chdir(settings["path_to_o3de"])
+    util.ChDir(settings["path_to_o3de"])
     ret = util.SafeCall("git pull")   
     util.Home()
+    if ret == 0:
+        print("O3DE has been updated")
     return ret
 
 
@@ -93,18 +111,17 @@ def Build(cleanAssets, cleanBuild, build, update, collect, settings):
         for i in samples:
             UpdateSample(i)
     for i in samples:
-        if i["subfolder"] != "":
-            if cleanAssets:
-                CleanAssets(i)
-            if cleanBuild:
-                CleanBuild(i)
-            if build:
-                BuildConfig(i)
-            if collect:
-                if CollectData(i) != 0:
-                    exit()
-                if CopyData(i) != 0:
-                    exit()
+        if cleanAssets:
+            CleanAssets(i)
+        if cleanBuild:
+            CleanBuild(i)
+        if build:
+            BuildConfig(i)
+        if collect:
+            if CollectData(i) != 0:
+                exit()
+            if CopyData(i) != 0:
+                exit()
 
 
 if __name__ == '__main__': 

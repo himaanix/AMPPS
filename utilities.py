@@ -25,7 +25,7 @@ def ProcessJson(file):
     f = open(file)
     return json.load(f)
     
-def Chdir(path):
+def ChDir(path):
     os.chdir(path)
 
 def JoinPaths(*paths):
@@ -42,7 +42,7 @@ def HandleWriteProtectedError(func, path, exc_info):
         func(path)
 
 def Home():
-    Chdir(wd)
+    ChDir(wd)
     
 def SafeCall(command, **kwargs):
     """
@@ -63,18 +63,26 @@ def SafeCall(command, **kwargs):
     try:
         subprocess.check_call(command, **kwargs)
     except subprocess.CalledProcessError as e:
-        print(f'Command "{cmdString}" failed with returncode {e.returncode}')
+        print(f'Command "{cmdString}" failed with returncode {hex(e.returncode)}')
         return e.returncode
     else:
         print(f'Successfully executed "check_call({cmdString})"')
     return 0
 
+def CalcStd(mean, data):
+    res = 0
+    for i in data:
+        res += (mean - i) ** 2
+    res = res/(len(data) - 1)
+    res = res ** (1/2)
+    return res
+
 def ProcessData(sample):
     path = os.path.join(sample["project"], sample["subfolder"], "user", sample["output_location"])
-    Chdir(path)
+    ChDir(path)
     fps = []
     frame = 1
-    while(True):
+    while(frame <= sample["frame_count"]):
         file_name = 'cpu_frame' + str(frame) + '_time.json'
         if (not os.path.exists(file_name)):
             break
@@ -82,28 +90,28 @@ def ProcessData(sample):
         fps.append((f["ClassData"])["frameTime"])
         frame +=1
 
-        
+    mean = reduce(lambda a, b: a+b, fps)/len(fps)
     meta = ProcessJson('benchmark_metadata.json')
     date = datetime.datetime.now()
     allData = {
         "Timestamp": date.strftime("%m/%d/%y %H:%M"),
         "BenchmarkName": (meta["ClassData"])["benchmarkName"],
         "GPU": ((meta["ClassData"])["gpuInfo"])["description"],
-        "Mean": reduce(lambda a, b: a+ b, fps)/ len(fps),
+        "Mean": mean,
         "Min": min(fps),
         "Max": max(fps),
-        "Data": fps
+        "Standard Deviation": CalcStd(mean,fps),
+        "Data": fps   
     }
     Home()
     return allData
 
 def AddRowCsv(sample, data): #this method needs to be cleaned up
-    Chdir(sample["path_to_data"])
-    headers = []
+    ChDir(sample["path_to_data"])
+    headers = ["Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Standard Deviation", "Data"] 
     filename = sample["data_name"]
     if (not os.path.exists(filename)):
         n = open(filename, 'w')
-        headers = ["Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Data"] 
         i = csv.writer(n)
         i.writerow(headers)
         n.close()
@@ -118,7 +126,7 @@ def GetRowCsv(sample, row):
     
 
 def GetAllRows(sample):
-    Chdir(sample["path_to_data"])
+    ChDir(sample["path_to_data"])
     with open(sample["data_name"], 'r') as f:
         csv_reader = csv.DictReader(f)
         data = list(csv_reader)
@@ -127,6 +135,7 @@ def GetAllRows(sample):
         i["Mean"] = float(i["Mean"])
         i["Min"] = float(i["Min"])
         i["Max"] = float(i["Max"])
+        i["Standard Deviation"] = float(i["Standard Deviation"])
         i["Data"] = StringRepToFloats(i["Data"])
     return data
 

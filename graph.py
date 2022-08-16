@@ -8,13 +8,7 @@ SPDX-License-Identifier: Apache-2.0 OR MIT
 import utilities as util
 import matplotlib.pyplot as plt 
 
-def CalcStd(mean, data):
-    res = 0
-    for i in data:
-        res += (mean - i) ** 2
-    res = res/(len(data) - 1)
-    res = res ** (1/2)
-    return res
+
 
 def HistOfSingleTest(sample, row):
     data = util.GetRowCsv(sample, row)
@@ -30,13 +24,14 @@ def HistOfSingleTest(sample, row):
     plt.ylabel("Count")
     plt.xlabel("Frame Time in ms")
     plt.title("Histogram of Frametimes for " + date_time)
-    util.Chdir(sample['path_to_data'])
+    util.ChDir(sample['path_to_data'])
     plt.savefig("hist" + str(row) + ".jpg")
     util.Home()
 
 def HistOfLatest(sample):
     data = util.GetAllRows(sample)
     index = len(data) -1
+    print("Histogram of Latest Dataset has been saved to " + sample["path_to_data"])
     return HistOfSingleTest(sample,index)
 
 def DataOverTime(sample,fps):
@@ -58,16 +53,20 @@ def DataOverTime(sample,fps):
         mean =  data["Mean"]
         maxx =  data["Max"]
         minn =  data["Min"]
+        std  =  data["Standard Deviation"]
         run = data["Timestamp"]
         if(fps):
+
+            fpsdata = [1000/i for i in data["Data"]]
             mean = 1000/mean
             maxx = 1000/maxx
             minn = 1000/minn
+            std = util.CalcStd(mean, fpsdata)
 
         means.append(mean)
         maxes.append(maxx)
         mins.append(minn)
-        stds.append(CalcStd(mean,data["Data"]))
+        stds.append(std)
         runs.append(run)
 
     fig, ax = plt.subplots()
@@ -80,15 +79,17 @@ def DataOverTime(sample,fps):
     plt.title(title)
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
-    util.Chdir(sample['path_to_data'])
+    util.ChDir(sample['path_to_data'])
     plt.savefig(filename + ".jpg")
     util.Home()
     
 def FpsOverTime(sample):
     DataOverTime(sample,True)
+    print("Graph of Frames/Second Over Time has been saved to " + sample["path_to_data"])
 
 def FramesOverTime(sample):
     DataOverTime(sample,False)
+    print("Graph of Frame Times Over Time has been saved to " + sample["path_to_data"])
 
 
 def Graph(settings):

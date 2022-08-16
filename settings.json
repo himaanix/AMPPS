@@ -9,7 +9,7 @@
             "cmd_param": "+loadlevel=levels/archvis/loft/interior_03.spawnable --run-automation-suite C:/github/o3de/AutomatedTesting/Assets/AutomatedTestScripts/frametime.sa.lua --exit-on-automation-end --regset=\"/O3DE/ScriptAutomation/FrameTime/ProfileName=10KCubeFrameTime\"",
             "width": 1920,
             "height": 1080,
-            "frame_count": 500,
+            "frame_count": 100,
             "idle_count":100,
             "path_to_data": "../../Users/himaani/Loft",
             "data_name": "LoftData.csv",
@@ -19,13 +19,13 @@
             "game_executable":"AtomSampleViewerStandalone", 
             "subfolder":"",
             "branch": "development",
-            "cmd_param":"-sample=Performance/100KDraw_10KDrawable_MultiView --runtestsuite scripts/frametime.sa.luac --exitontestend --regset=\"/O3DE/ScriptAutomation/FrameTime/ProfileName=100KDraw_10KDrawable_MultiView\" --sample=100KDraw_10KDrawable_MultiView",
+            "cmd_param":"-sample=Performance/100KDraw_10KDrawable_MultiView --runtestsuite scripts/frametime.sa.luac --exitontestend --regset=\"/O3DE/ScriptAutomation/FrameTime/ProfileName=100KDraw_10KDrawable_MultiView\"",
             "width": 800,
             "height": 600,
-            "frame_count": 500,
+            "frame_count": 100,
             "idle_count":100,
             "path_to_data": "../../Users/himaani/ASV",
-            "data_name": "ASVData.csv",
+            "data_name": "ASVDataTest.csv",
             "output_location": "scriptautomation/profiling/100KDraw_10KDrawable_MultiView"}
         ]       
     
