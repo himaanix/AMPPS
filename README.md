@@ -6,10 +6,9 @@ This repository allows for collecting the performance data for multiple projects
 <h2>In order to use these scripts, you must first have some basic requirements:</h2>  
 
 1. Have O3DE installed - instructions for this can be found at https://github.com/o3de/o3de  
-2. Have the projects that you desire to test cloned  
-3. O3DE, the target projects, and this repository should all be cloned at the same level  
-4. You must have python installed on your machine  
-5. You must have matplotlib installed if you intend to use the graphing functionality  
+2. Have the projects that you desire to test cloned   
+3. You must have python installed on your machine  
+4. You must have matplotlib installed if you intend to use the graphing functionality  
 
 
 <h2>Once you have completed the steps above, you may configure the settings.json file:</h2>  
@@ -60,6 +59,9 @@ If the DataOverTime function is being used to graph something other than FPS, en
 `DataOverTime`: This function plots a graph with standard deviation bars in blue, the mean in black, and the max and min in red.  
 `HistOfSingleTest`: This function plots a histogram of the given test as well as a green line indicating the mean, and a red line indicating the maximum  
 `HistOfLatest`: This function plots a histogram of the last row in the specified data file
+<<<<<<< HEAD
 
 
 levels/AutomatedTesting/Levels/Performance/10KEntityCpuPerfTest/10KEntityCpuPerfTest.spawnable
+=======
+>>>>>>> 458be35d27504ff2b9e48dfd45b288b6906adc5f
