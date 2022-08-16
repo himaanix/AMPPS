@@ -59,9 +59,4 @@ If the DataOverTime function is being used to graph something other than FPS, en
 `DataOverTime`: This function plots a graph with standard deviation bars in blue, the mean in black, and the max and min in red.  
 `HistOfSingleTest`: This function plots a histogram of the given test as well as a green line indicating the mean, and a red line indicating the maximum  
 `HistOfLatest`: This function plots a histogram of the last row in the specified data file
-<<<<<<< HEAD
 
-
-levels/AutomatedTesting/Levels/Performance/10KEntityCpuPerfTest/10KEntityCpuPerfTest.spawnable
-=======
->>>>>>> 458be35d27504ff2b9e48dfd45b288b6906adc5f
