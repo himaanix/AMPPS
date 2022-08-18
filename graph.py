@@ -31,8 +31,9 @@ def HistOfSingleTest(sample, row):
 def HistOfLatest(sample):
     data = util.GetAllRows(sample)
     index = len(data) -1
+    HistOfSingleTest(sample,index)
     print("Histogram of Latest Dataset has been saved to " + sample["path_to_data"])
-    return HistOfSingleTest(sample,index)
+    
 
 def DataOverTime(sample,fps):
     means = []
@@ -93,7 +94,7 @@ def FramesOverTime(sample):
 
 
 def Graph(settings):
-    samples = settings["samples_to_run"]
+    samples = settings["projects_to_run"]
     for i in samples:
         FpsOverTime(i)
         FramesOverTime(i)
@@ -101,5 +102,5 @@ def Graph(settings):
 
 
 if __name__ == '__main__':
-
-    Graph()   
+    settings = ProcessJson("settings.json")
+    Graph(settings)   

@@ -1,6 +1,6 @@
 {
     "path_to_o3de": "../o3de",
-    "samples_to_run":[       
+    "projects_to_run":[       
         {"url": "https://github.com/aws-lumberyard/loft-arch-vis-sample",
             "project": "../loft-arch-vis-sample",
             "game_executable": "LoftSample.GameLauncher",

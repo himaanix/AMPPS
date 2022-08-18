@@ -65,7 +65,7 @@ def CopyData(sample):
 
 def CleanBuild(sample):
     #delete build folder
-    util.RmDir(util.JoinPaths(sample["project"], sample["subfolder"], "build"))
+    #util.RmDir(util.JoinPaths(sample["project"], sample["subfolder"], "build"))
     print(sample["project"] +"'s build folder has been cleaned")
 
 def CleanAssets(sample):
@@ -74,42 +74,10 @@ def CleanAssets(sample):
     util.RmDir(util.JoinPaths(sample["project"], sample["subfolder"], "user"))
     print(sample["project"] + "'s assets have been cleaned")
 
-def Clone(sample):
-    util.ChDir("..")
-    ret = util.SafeCall("git Clone " + sample["url"])
-    util.Home()
-    if ret == 0:
-        print(sample["project"] + " has been cloned")
-    return ret
 
-def UpdateSample(sample):
-    util.ChDir(util.JoinPaths(sample["project"] ))
-    ret = util.SafeCall("git pull")
-    util.Home()
-    if ret == 0:
-        print(sample["project"] + " has been updated")
-    return ret
+def Build(cleanAssets, cleanBuild, build, collect, settings):
 
-def UpdateO3de(settings):
-    print(settings)
-    print(settings["path_to_o3de"])
-    util.ChDir(settings["path_to_o3de"])
-    ret = util.SafeCall("git pull")   
-    util.Home()
-    if ret == 0:
-        print("O3DE has been updated")
-    return ret
-
-
-
-
-def Build(cleanAssets, cleanBuild, build, update, collect, settings):
-
-    samples = settings["samples_to_run"]
-    if update:
-        UpdateO3de(settings)
-        for i in samples:
-            UpdateSample(i)
+    samples = settings["projects_to_run"]
     for i in samples:
         if cleanAssets:
             CleanAssets(i)

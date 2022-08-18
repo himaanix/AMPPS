@@ -36,6 +36,6 @@ if args.build or args.update or args.collect or args.graph:
 settings = utilities.SetConstants(args.path_to_settings)
 print(args)
 if doBuild or doUpdate or doCollect:
-    build.Build(args.clean_build, args.clean_assets, doBuild, doUpdate, doCollect, settings)
+    build.Build(args.clean_build, args.clean_assets, doBuild, doCollect, settings)
 if doGraph:
     graph.Graph(settings)

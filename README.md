@@ -15,7 +15,7 @@ This repository allows for collecting the performance data for multiple projects
 
 Unless stated otherwise all paths need to be relative to the AMPPS directory
 * "path_to_o3de": Specify the path to O3DE in your file system here. 
-For each project in "samples_to_run" there are 13 variables that are needed.  
+For each project in "projects_to_run" there are 13 variables that are needed.  
 * "url": this is the url for the git repository of the target project  
 * "project": this is the path to the folder of the target project  
 * "game_executable": this is the name of the executable of the project without the .exe extension  

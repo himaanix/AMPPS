@@ -16,11 +16,6 @@ from functools import reduce
 import csv
 logger = logging.getLogger(__name__)
 
-
-class PerformanceTestingException(Exception):
-    """ Custom Exception class for performance testing """
-    pass
-
 def ProcessJson(file):
     f = open(file)
     return json.load(f)
@@ -80,17 +75,17 @@ def CalcStd(mean, data):
 def ProcessData(sample):
     path = os.path.join(sample["project"], sample["subfolder"], "user", sample["output_location"])
     ChDir(path)
-    fps = []
+    frametimes = []
     frame = 1
     while(frame <= sample["frame_count"]):
         file_name = 'cpu_frame' + str(frame) + '_time.json'
         if (not os.path.exists(file_name)):
             break
         f = ProcessJson(file_name)
-        fps.append((f["ClassData"])["frameTime"])
+        frametimes.append((f["ClassData"])["frameTime"])
         frame +=1
 
-    mean = reduce(lambda a, b: a+b, fps)/len(fps)
+    mean = reduce(lambda a, b: a+b, frametimes)/len(frametimes)
     meta = ProcessJson('benchmark_metadata.json')
     date = datetime.datetime.now()
     allData = {
@@ -98,10 +93,10 @@ def ProcessData(sample):
         "BenchmarkName": (meta["ClassData"])["benchmarkName"],
         "GPU": ((meta["ClassData"])["gpuInfo"])["description"],
         "Mean": mean,
-        "Min": min(fps),
-        "Max": max(fps),
-        "Standard Deviation": CalcStd(mean,fps),
-        "Data": fps   
+        "Min": min(frametimes),
+        "Max": max(frametimes),
+        "Standard Deviation": CalcStd(mean,frametimes),
+        "Data": frametimes   
     }
     Home()
     return allData
