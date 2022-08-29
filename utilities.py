@@ -58,7 +58,7 @@ def SafeCall(command, **kwargs):
     try:
         subprocess.check_call(command, **kwargs)
     except subprocess.CalledProcessError as e:
-        print(f'Command "{cmdString}" failed with returncode {hex(e.returncode)}')
+        print(f'Command "{cmdString}" failed with returncode {e.returncode}')
         return e.returncode
     else:
         print(f'Successfully executed "check_call({cmdString})"')
@@ -72,8 +72,8 @@ def CalcStd(mean, data):
     res = res ** (1/2)
     return res
 
-def ProcessData(sample):
-    path = os.path.join(sample["project"], sample["subfolder"], "user", sample["output_location"])
+def ProcessData(sample, annotation):
+    path = os.path.join(sample["project"], sample["subfolder"], "user", sample["output_location"], sample["profile_name"])
     ChDir(path)
     frametimes = []
     frame = 1
@@ -90,6 +90,7 @@ def ProcessData(sample):
     date = datetime.datetime.now()
     allData = {
         "Timestamp": date.strftime("%m/%d/%y %H:%M"),
+        "Annotation": annotation,
         "BenchmarkName": (meta["ClassData"])["benchmarkName"],
         "GPU": ((meta["ClassData"])["gpuInfo"])["description"],
         "Mean": mean,
@@ -101,9 +102,9 @@ def ProcessData(sample):
     Home()
     return allData
 
-def AddRowCsv(sample, data): #this method needs to be cleaned up
+def AddRowCsv(sample, data, annotation): 
     ChDir(sample["path_to_data"])
-    headers = ["Timestamp", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Standard Deviation", "Data"] 
+    headers = ["Timestamp", "Annotation", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Standard Deviation", "Data"] 
     filename = sample["data_name"]
     if (not os.path.exists(filename)):
         n = open(filename, 'w')

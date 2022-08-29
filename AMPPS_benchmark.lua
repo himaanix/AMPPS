@@ -11,13 +11,13 @@
 g_baseFolder = ResolvePath('@user@/Scripts/PerformanceBenchmarks/')
 IDLE_COUNT = 1000
 FRAME_COUNT = 2500
-samples_to_run = {
+projects_to_run = {
     {prefix = 'Performance', name = '100KDraw_10KDrawable_MultiView', width = 800, height =600
     }
 }
 
-Print('Capturing data for ' ..tostring(#samples_to_run) .. ' benchmarks')
-for index, sample in ipairs(samples_to_run) do 
+Print('Capturing data for ' ..tostring(#projects_to_run) .. ' benchmarks')
+for index, sample in ipairs(projects_to_run) do 
     sample_path = sample['prefix'] ..'/' .. sample ['name']
     Print('Opening sample' ..sample_path)
     OpenSample(sample_path)
