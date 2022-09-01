@@ -1,5 +1,6 @@
 {
     "path_to_o3de": "../o3de",
+    "o3de_url": "https://github.com/aws-lumberyard-dev/o3de",
     "projects_to_run":[       
         {"url": "https://github.com/aws-lumberyard/loft-arch-vis-sample",
             "project": "../loft-arch-vis-sample",
@@ -13,8 +14,7 @@
             "frame_count": 100,
             "idle_count":100,
             "path_to_data": "../../Users/himaani/Loft",
-            "data_name": "LoftData.csv",
-            "output_location": "scriptautomation/profiling"},
+            "data_name": "LoftData.csv"},
         {"url": "https://github.com/o3de/o3de-atom-sampleviewer",
             "project": "../o3de-atom-sampleviewer",
             "game_executable":"AtomSampleViewerStandalone", 
@@ -27,8 +27,7 @@
             "frame_count": 100,
             "idle_count":100,
             "path_to_data": "../../Users/himaani/ASV",
-            "data_name": "ASVDataTest.csv",
-            "output_location": "scriptautomation/profiling"}
+            "data_name": "ASVDataTest.csv"}
         ]       
     
 }

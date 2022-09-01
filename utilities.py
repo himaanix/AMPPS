@@ -26,6 +26,9 @@ def ChDir(path):
 def JoinPaths(*paths):
     return os.path.join(*paths)
 
+def GetAbsPath(path):
+    return os.path.abspath(path)
+
 def RmDir(path):
     shutil.rmtree(path, onerror=HandleWriteProtectedError)
 
@@ -73,7 +76,7 @@ def CalcStd(mean, data):
     return res
 
 def ProcessData(sample, annotation):
-    path = os.path.join(sample["project"], sample["subfolder"], "user", sample["output_location"], sample["profile_name"])
+    path = os.path.join(sample["project"], sample["subfolder"], "user", "scriptautomation", "profiling", sample["profile_name"])
     ChDir(path)
     frametimes = []
     frame = 1

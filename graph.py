@@ -15,6 +15,11 @@ def HistOfSingleTest(sample, row):
     mean = data["Mean"]
     maxx = data["Max"]
     date_time = data["Timestamp"]
+    title = ""
+    if data["Annotation"] == "":
+        title = date_time
+    else:
+        title = data["Annotation"]
     data = data["Data"]
     fig, ax = plt.subplots()
     ax.hist(data, bins=100, linewidth=1, edgecolor= "white")
@@ -23,7 +28,7 @@ def HistOfSingleTest(sample, row):
     ax.spines['bottom'].set_visible(False)
     plt.ylabel("Count")
     plt.xlabel("Frame Time in ms")
-    plt.title("Histogram of Frametimes for " + date_time)
+    plt.title("Histogram of Frametimes for " + title)
     util.ChDir(sample['path_to_data'])
     plt.savefig("hist" + str(row) + ".jpg")
     util.Home()
@@ -55,7 +60,11 @@ def DataOverTime(sample,fps):
         maxx =  data["Max"]
         minn =  data["Min"]
         std  =  data["Standard Deviation"]
-        run = data["Timestamp"]
+        run = ""
+        if data["Annotation"] == "":
+            run = data["Timestamp"]
+        else:
+            run = data["Annotation"]
         if(fps):
 
             fpsdata = [1000/i for i in data["Data"]]
@@ -76,7 +85,7 @@ def DataOverTime(sample,fps):
     ax.scatter(runs,means, color = 'black', zorder= 10)
     ax.errorbar(runs, means, stds, fmt = 'none', linewidth=2, capsize=6)
     plt.ylabel(ylabel)
-    plt.xlabel("Dates")
+    plt.xlabel("Runs")
     plt.title(title)
     plt.xticks(rotation=45, ha='right')
     plt.tight_layout()
