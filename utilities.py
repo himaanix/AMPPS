@@ -16,20 +16,35 @@ from functools import reduce
 import csv
 logger = logging.getLogger(__name__)
 
-def ProcessJson(file):
+def ProcessJson(file:str) -> dict: 
+    """
+    @param file name of file
+    """
     f = open(file)
     return json.load(f)
     
-def ChDir(path):
+def ChDir(path:str):
+    """
+    @param path path to move to
+    """
     os.chdir(path)
 
-def JoinPaths(*paths):
+def JoinPaths(*paths) -> str: #input type
+    """
+    @param paths paths to join
+    """
     return os.path.join(*paths)
 
-def GetAbsPath(path):
+def GetAbsPath(path: str):
+    """
+    @param path path to construct absolute path for
+    """
     return os.path.abspath(path)
 
-def RmDir(path):
+def RmDir(path:str):
+    """
+    @param path path to directory to remove
+    """
     shutil.rmtree(path, onerror=HandleWriteProtectedError)
 
 def HandleWriteProtectedError(func, path, exc_info):
@@ -40,6 +55,9 @@ def HandleWriteProtectedError(func, path, exc_info):
         func(path)
 
 def Home():
+    """
+    Changes directory back to AMPPS directory
+    """
     ChDir(wd)
     
 def SafeCall(command, **kwargs):
@@ -67,7 +85,12 @@ def SafeCall(command, **kwargs):
         print(f'Successfully executed "check_call({cmdString})"')
     return 0
 
-def CalcStd(mean, data):
+def CalcStd(mean:float, data:list) -> float:
+    """
+    @param mean mean of dataset
+    @param data list of all data points
+    @returns standard deviation of dataset
+    """
     res = 0
     for i in data:
         res += (mean - i) ** 2
@@ -75,7 +98,13 @@ def CalcStd(mean, data):
     res = res ** (1/2)
     return res
 
-def ProcessData(sample, annotation):
+def ProcessData(sample:dict, annotation:str) -> dict:
+    """
+    @param sample dictionary of project
+    @param annotation string to label dataset
+    @returns dictionary of data
+    Turns the data into dictionary
+    """
     path = os.path.join(sample["project"], sample["subfolder"], "user", "scriptautomation", "profiling", sample["profile_name"])
     ChDir(path)
     frametimes = []
@@ -105,7 +134,13 @@ def ProcessData(sample, annotation):
     Home()
     return allData
 
-def AddRowCsv(sample, data, annotation): 
+def AddRowCsv(sample:dict, data:dict, annotation: str): 
+    """
+    @param sample dictionary of project
+    @param data dictionary of data
+    @param annotation string to label dataset
+    Writes data to the CSV
+    """
     ChDir(sample["path_to_data"])
     headers = ["Timestamp", "Annotation", "BenchmarkName", "GPU", "Mean", "Min", "Max", "Standard Deviation", "Data"] 
     filename = sample["data_name"]
@@ -119,12 +154,21 @@ def AddRowCsv(sample, data, annotation):
         i.writerow(data)
     Home()
     
-def GetRowCsv(sample, row): 
+def GetRowCsv(sample:dict, row:int) -> dict: 
+    """
+    @param sample dictionary of project
+    @param row row to get data for
+    @returns row from CSV file as dictionary
+    """
     all_data = GetAllRows(sample)
     return all_data[row]
     
 
-def GetAllRows(sample):
+def GetAllRows(sample:dict) -> list:
+    """
+    @param sample dictionary of project
+    @returns CSV as a list of dictionaries
+    """
     ChDir(sample["path_to_data"])
     with open(sample["data_name"], 'r') as f:
         csv_reader = csv.DictReader(f)
@@ -139,7 +183,11 @@ def GetAllRows(sample):
     return data
 
     
-def StringRepToFloats(list):
+def StringRepToFloats(list:list) -> list:
+    """
+    @param list string representation of data
+    @returns float representation of data
+    """
     list_of_strings = list.strip('][').split(', ')
     list_of_floats = []
     for i in list_of_strings:
@@ -147,7 +195,11 @@ def StringRepToFloats(list):
     return list_of_floats
     
 
-def SetConstants(f):
+def SetConstants(f:str) -> dict:
+    """
+    @param f filename of settings file
+    @returns settings file as dictionary
+    """
     settings = ProcessJson(f)
     return settings
 

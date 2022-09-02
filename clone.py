@@ -11,12 +11,23 @@ import subprocess
 import string
 import json
 
-def Clone(path, url):
+def Clone(path:str, url:str) -> int:
+    """
+    @param path path to the repository
+    @param url url of repository
+    @returns 0 if successful return code if not
+    Clones repository at given path
+    """
     ret = util.SafeCall("git clone" + url + " " + path)
     print(url + " has been cloned at " + path)
     return ret
 
-def RepExists(path, url):
+def RepExists(path:str, url:str) -> bool:
+    """
+    @param path path where repository should exits
+    @param url url of repository
+    @returns True if repository exists, False if not
+    """
     if os.path.exists(path):
         util.ChDir(path)
         try:
@@ -46,24 +57,39 @@ def RepExists(path, url):
     else:
         return True
 
-def SetupEngine(path):
+def SetupEngine(path:str):
+    """
+    @param path path to engine
+    Sets up engine by installing gif lfs and registering engine
+    """
     util.ChDir(path)
-    util.SafeCall("git lfs install")
+    if util.SafeCall("git lfs install") != 0:
+        exit()
     enginefile = util.ProcessJson('engine.json')
     enginefile["engine_name"] = "o3de_AMPPS"
     json.dump(enginefile, open('engine.json', 'w'), indent=4)
-    util.SafeCall("scripts\o3de.bat register --this-engine")
-    return 0
+    if util.SafeCall("scripts\o3de.bat register --this-engine") != 0:
+        exit()
 
-def SetupProject(sample):
+def SetupProject(sample:dict):
+    """
+    @param sample dictionary of project
+    Sets up project by installing git lfs and changing engine name
+    """
     util.ChDir(sample["project"])
-    util.SafeCall("git lfs install")
+    if util.SafeCall("git lfs install") != 0:
+        exit()
     projectfile = util.ProcessJson('project.json')
     projectfile['engine'] = 'o3de_AMPPS'
     json.dump(projectfile, open('engine.json', 'w'), indent=4)
     return 0
 
-def Branch(sample):
+def Branch(sample:dict):
+    """
+    @param sample dictionary of project
+    Switches branch to the one in the dictionary
+    """
+    util.ChDir(sample["project"])
     try:
         call = subprocess.run("git remote --v", capture_output=True)
     except subprocess.CalledProcessError as e:
@@ -71,11 +97,16 @@ def Branch(sample):
         return e.returncode
     output = call.stdout
     output = output.decode("utf-8")
+    util.Home()
     if 'fatal' in output:
         print('branch does not exist')
         exit()
 
-def UpdateSample(sample):
+def UpdateSample(sample:dict) -> int:
+    """
+    @param sample dictionary of project
+    git pulls on repository of project
+    """
     util.ChDir(util.JoinPaths(sample["project"], sample["subfolder"]))
     ret = util.SafeCall("git pull")
     util.Home()
@@ -83,10 +114,11 @@ def UpdateSample(sample):
         print(sample["project"] + " has been updated")
     return ret
 
-def UpdateO3de(settings):
-    print(settings)
-    print("updating o3de")
-    print(settings["path_to_o3de"])
+def UpdateO3de(settings:dict) -> int:
+    """
+    @param settings settings file
+    git pulls on repository of o3de
+    """
     util.ChDir(settings["path_to_o3de"])
     ret = util.SafeCall("git pull")   
     util.Home()
@@ -94,7 +126,11 @@ def UpdateO3de(settings):
         print("O3DE has been updated")
     return ret
 
-def Manage(update,settings):
+def Manage(update:bool,settings:dict):
+    """
+    @param update boolean to determine whether or not to update
+    @param settings settings file
+    """
     samples = settings["projects_to_run"]
     if not RepExists(settings["path_to_o3de"], settings["o3de_url"]):
         clone(settings["path_to_o3de"], settings["o3de_url"])
@@ -112,5 +148,4 @@ def Manage(update,settings):
                 exit()
         if update:
             UpdateSample(i)
-            print("The project " + i["project"] + " has been updated")
         Branch(i)

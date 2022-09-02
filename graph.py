@@ -10,7 +10,11 @@ import matplotlib.pyplot as plt
 
 
 
-def HistOfSingleTest(sample, row):
+def HistOfSingleTest(sample:dict, row:int):
+    """
+    @param sample dictionary of project
+    @row row in CSV to create histogram for
+    """
     data = util.GetRowCsv(sample, row)
     mean = data["Mean"]
     maxx = data["Max"]
@@ -33,14 +37,22 @@ def HistOfSingleTest(sample, row):
     plt.savefig("hist" + str(row) + ".jpg")
     util.Home()
 
-def HistOfLatest(sample):
+def HistOfLatest(sample:dict):
+    """
+    @param sample dictionary of project
+    Creates histogram of last entry in CSV
+    """
     data = util.GetAllRows(sample)
     index = len(data) -1
     HistOfSingleTest(sample,index)
     print("Histogram of Latest Dataset has been saved to " + sample["path_to_data"])
     
 
-def DataOverTime(sample,fps):
+def DataOverTime(sample:dict,fps:bool):
+    """
+    @param sample dictionary of project
+    @param fps True if creating fps graph when data in CSV is in frame time, False for all other applications
+    """
     means = []
     maxes = []
     mins =  []
@@ -93,16 +105,25 @@ def DataOverTime(sample,fps):
     plt.savefig(filename + ".jpg")
     util.Home()
     
-def FpsOverTime(sample):
+def FpsOverTime(sample:dict):
+    """
+    @sample dictionary of project
+    """
     DataOverTime(sample,True)
     print("Graph of Frames/Second Over Time has been saved to " + sample["path_to_data"])
 
-def FramesOverTime(sample):
+def FramesOverTime(sample:dict):
+    """
+    @sample dictionary of project
+    """
     DataOverTime(sample,False)
     print("Graph of Frame Times Over Time has been saved to " + sample["path_to_data"])
 
 
-def Graph(settings):
+def Graph(settings:dict):
+    """
+    @param settings settings file
+    """
     samples = settings["projects_to_run"]
     for i in samples:
         FpsOverTime(i)
