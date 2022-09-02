@@ -113,7 +113,7 @@ def CleanBuild(pathtobuild:str):
     util.RmDir(pathtobuild)
     print(sample["project"] +"'s build folder has been cleaned")
 
-def CleanAssets(pathtobuild:str):
+def CleanAssets(pathtobuild:str): #this is wrong need to be fixed
     """
     @param pathtobuild This is the path to the folder in which the build folder is located
     Deletes user and cache folder 

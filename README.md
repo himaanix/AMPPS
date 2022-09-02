@@ -13,9 +13,10 @@ This repository allows for collecting the performance data for multiple projects
 
 <h2>Once you have completed the steps above, you may configure the settings.json file:</h2>  
 
-Unless stated otherwise all paths need to be relative to the AMPPS directory
-* "path_to_o3de": Specify the path to O3DE in your file system here. 
-For each project in "projects_to_run" there are 13 variables that are needed.  
+
+* "path_to_o3de": Specify the path to O3DE in your file system here.  
+* "o3de_url": This is the url to the git repository of o3de
+For each project in "projects_to_run" there are variables that are needed.  
 * "url": this is the url for the git repository of the target project  
 * "project": this is the path to the folder of the target project  
 * "game_executable": this is the name of the executable of the project without the .exe extension  
@@ -24,14 +25,13 @@ For each project in "projects_to_run" there are 13 variables that are needed.
 * "cmd_param": when the game executable is run, specify what command line parameters you would like to run it with  
 * "width": this is the width you would like the Viewport resized to  
 * "height": this is the height you would like the Viewport resized to  
-* "frame_time": this is the amount of frames that you would like data collected for  
-* "idle_time": this is the amount of frames you would like the level to idle for before beginning data collection  
+* "frame_count": this is the amount of frames that you would like data collected for  
+* "idle_count": this is the amount of frames you would like the level to idle for before beginning data collection  
 * "path_to_data": This is path to the local CSV file where you will store the data that is collected as well as where any graphs generated will be saved
 * "data_name": This is the name of the CSV file where the collected data is stored  
-* "output_location": This is the output location of the generated data in the project. It is important that the generated Data follows the same format as in the wiki. This should be relative to the subfolder. This path should be ***relative to the user folder*** in your project.  
-
-More information on each of these parameters can be found in the wiki  
-  
+* "output_location": This is the output location of the generated data in the project. It is important that the generated Data follows the same format as in the wiki. This should be relative to the subfolder. This path should be ***relative to the user folder*** in your project. 
+* **optional parameter**  "path_to_build": If you are starting out using AMPPS already having a build folder for a project, use this parameter to list that path. This path is specifically for use in builds that are project centric. The path should be to the folder that contains the build folder not the build folder itself (`loft-arch-vis-sample/Project` instead of `loft-arch-vis-sample/Project/build`) 
+ 
     
 
 <h2>How to Use:</h2>  
@@ -42,7 +42,20 @@ More information on each of these parameters can be found in the wiki
 * If you only want to use a subset of the functionalities, use the parameters for the functions you would like to use. By specifying one or more of these functions, the rest will not execute unless also specified. 
 * If you are collecting data, ensure that the data file is not open
 * You may also specify an alternate settings.json file with `--path_to_settings` followed by the path to the alternate file.
+* You may add a label to the dataset by using `--annotation`
+* You may ignore errors and proceed with the script by using `--ignore_errors`
+* You may build in an engine centric manner by using `--engine_centric` followed by the path to the build folder. The format of this path must match that of the "path_to_build" parameter in the settings file.
 * For more information on command line parameter options run `runner.py --help`  
+
+<h3>Examples of uses</h3>  
+
+* `runner.py`: updates, builds, collects data, and graphs
+* `runner.py --collect`: collects data
+* `runner.py --collect --graph`: collects and graphs data
+* `runner.py --collect --path_to_settings <path>`: collects data from the levels specified in <path>
+
+
+
 
   
     
